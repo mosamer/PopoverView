@@ -58,6 +58,12 @@
 
 /******************************************************************/
 
+typedef NS_ENUM(NSUInteger, PopoverArrowDirection) {
+    PopoverArrowDirectionAutomatic,
+    PopoverArrowDirectionBottom,
+    PopoverArrowDirectionTop,
+};
+
 
 @class PopoverView;
 
@@ -133,13 +139,15 @@
 
 + (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withContentView:(UIView *)cView delegate:(id<PopoverViewDelegate>)delegate;
 
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withContentView:(UIView *)cView delegate:(id<PopoverViewDelegate>)delegate arrowDirection:(PopoverArrowDirection)direction;
+
 #pragma mark - Instance Showing Methods
 
 //Adds/animates in the popover to the top of the view stack with the arrow pointing at the "point"
 //within the specified view.  The contentView will be added to the popover, and should have either
 //a clear color backgroundColor, or perhaps a rounded corner bg rect (radius 4.f if you're going to
 //round).
-- (void)showAtPoint:(CGPoint)point inView:(UIView *)view withContentView:(UIView *)contentView;
+- (void)showAtPoint:(CGPoint)point inView:(UIView *)view withContentView:(UIView *)contentView arrowDirection:(PopoverArrowDirection)direction;
 
 //Calls above method with a UILabel containing the text you deliver to this method.
 - (void)showAtPoint:(CGPoint)point inView:(UIView *)view withText:(NSString *)text;

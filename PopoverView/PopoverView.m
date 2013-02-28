@@ -95,12 +95,19 @@
 
 + (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withContentView:(UIView *)cView delegate:(id<PopoverViewDelegate>)delegate {
     PopoverView *popoverView = [[PopoverView alloc] initWithFrame:CGRectZero];
-    [popoverView showAtPoint:point inView:view withContentView:cView];
+    [popoverView showAtPoint:point inView:view withContentView:cView arrowDirection:PopoverArrowDirectionAutomatic];
     popoverView.delegate = delegate;
     [popoverView RELEASE];
     return popoverView;
 }
 
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withContentView:(UIView *)cView delegate:(id<PopoverViewDelegate>)delegate arrowDirection:(PopoverArrowDirection)direction {
+    PopoverView *popoverView = [[PopoverView alloc] initWithFrame:CGRectZero];
+    [popoverView showAtPoint:point inView:view withContentView:cView arrowDirection:direction];
+    popoverView.delegate = delegate;
+    [popoverView RELEASE];
+    return popoverView;
+}
 #pragma mark - View Lifecycle
 
 - (id)initWithFrame:(CGRect)frame
@@ -261,7 +268,7 @@
     
     self.subviewsArray = viewArray;
     
-    [self showAtPoint:point inView:view withContentView:[container AUTORELEASE]];
+    [self showAtPoint:point inView:view withContentView:[container AUTORELEASE] arrowDirection:PopoverArrowDirectionAutomatic];
 }
 
 - (void)showAtPoint:(CGPoint)point inView:(UIView *)view withTitle:(NSString *)title withViewArray:(NSArray *)viewArray
@@ -346,7 +353,7 @@
     
     self.subviewsArray = viewArray;
     
-    [self showAtPoint:point inView:view withContentView:[container AUTORELEASE]];
+    [self showAtPoint:point inView:view withContentView:[container AUTORELEASE] arrowDirection:PopoverArrowDirectionAutomatic];
 }
 
 - (void)showAtPoint:(CGPoint)point inView:(UIView *)view withStringArray:(NSArray *)stringArray
@@ -471,7 +478,7 @@
     [self showAtPoint:point inView:view withTitle:title withViewArray:[NSArray arrayWithObject:cView]];
 }
 
-- (void)showAtPoint:(CGPoint)point inView:(UIView *)view withContentView:(UIView *)cView {
+- (void)showAtPoint:(CGPoint)point inView:(UIView *)view withContentView:(UIView *)cView arrowDirection:(PopoverArrowDirection)direction {
     
     //NSLog(@"point:%f,%f", point.x, point.y);
     
@@ -482,7 +489,7 @@
     // http://stackoverflow.com/questions/3843411/getting-reference-to-the-top-most-view-window-in-ios-application/8045804#8045804
     topView = [[[[UIApplication sharedApplication] keyWindow] subviews] lastObject];
     
-    [self setupLayout:point inView:view];
+    [self setupLayout:point inView:view withArrowDirection:direction];
     
     // Make the view small and transparent before animation
     self.alpha = 0.f;
@@ -506,7 +513,7 @@
     // make transparent
     self.alpha = 0.f;
     
-    [self setupLayout:point inView:view];
+    [self setupLayout:point inView:view withArrowDirection:PopoverArrowDirectionAutomatic];
     
     // animate back to full opacity
     [UIView animateWithDuration:0.2f delay:0.f options:UIViewAnimationOptionCurveEaseInOut animations:^{
@@ -514,7 +521,7 @@
     } completion:nil];
 }
 
--(void)setupLayout:(CGPoint)point inView:(UIView*)view
+-(void)setupLayout:(CGPoint)point inView:(UIView*)view withArrowDirection:(PopoverArrowDirection)direction
 {
     CGPoint topPoint = [topView convertPoint:point fromView:view];
 
@@ -560,18 +567,33 @@
 
     float topPadding = kTopMargin;
 
-    above = YES;
 
-    if (topPoint.y - contentHeight - arrowHeight - topPadding < CGRectGetMinY(topViewBounds)) {
-        //Position below because it won't fit above.
-        above = NO;
-        
-        boxFrame = CGRectMake(xOrigin, arrowPoint.y + arrowHeight, boxWidth, boxHeight);
-    } else {
-        //Position above.
-        above = YES;
-        
-        boxFrame = CGRectMake(xOrigin, arrowPoint.y - arrowHeight - boxHeight, boxWidth, boxHeight);
+    switch (direction) {
+        case PopoverArrowDirectionAutomatic: {
+            above = YES;
+            if (topPoint.y - contentHeight - arrowHeight - topPadding < CGRectGetMinY(topViewBounds)) {
+                //Position below because it won't fit above.
+                above = NO;
+                
+                boxFrame = CGRectMake(xOrigin, arrowPoint.y + arrowHeight, boxWidth, boxHeight);
+            } else {
+                //Position above.
+                above = YES;
+                
+                boxFrame = CGRectMake(xOrigin, arrowPoint.y - arrowHeight - boxHeight, boxWidth, boxHeight);
+            }
+            break;
+        }
+        case PopoverArrowDirectionBottom: {
+            above = NO;
+            boxFrame = CGRectMake(xOrigin, arrowPoint.y + arrowHeight, boxWidth, boxHeight);
+            break;
+        } case PopoverArrowDirectionTop: {
+            above = YES;
+            boxFrame = CGRectMake(xOrigin, arrowPoint.y - arrowHeight - boxHeight, boxWidth, boxHeight);
+        }
+        default:
+            break;
     }
 
     //NSLog(@"boxFrame:(%f,%f,%f,%f)", boxFrame.origin.x, boxFrame.origin.y, boxFrame.size.width, boxFrame.size.height);
