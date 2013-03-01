@@ -774,48 +774,50 @@
 #pragma mark - User Interaction
 
 - (void)tapped:(UITapGestureRecognizer *)tap
-{    
-    CGPoint point = [tap locationInView:contentView];
+{
+    [self dismiss:YES];
     
-    //NSLog(@"point:(%f,%f)", point.x, point.y);
-    
-    BOOL found = NO;
-    
-    //NSLog(@"subviewsArray:%@", subviewsArray);
-    
-    for (int i = 0; i < subviewsArray.count && !found; i++) {
-        UIView *view = [subviewsArray objectAtIndex:i];
-        
-        //NSLog(@"Rect:(%f,%f,%f,%f)", view.frame.origin.x, view.frame.origin.y, view.frame.size.width, view.frame.size.height);
-        
-        if (CGRectContainsPoint(view.frame, point)) {
-            //The tap was within this view, so we notify the delegate, and break the loop.
-            
-            found = YES;
-            
-            //NSLog(@"Tapped subview:%d", i);
-            
-            if ([view isKindOfClass:[UIButton class]]) {
-                return;
-            }
-            
-            if (delegate && [delegate respondsToSelector:@selector(popoverView:didSelectItemAtIndex:)]) {
-                [delegate popoverView:self didSelectItemAtIndex:i];
-            }
-            
-            break;
-        }
-    }
-    
-    if (!found && CGRectContainsPoint(contentView.bounds, point)) {
-        found = YES;
-        //NSLog(@"popover box contains point, ignoring user input");
-    }
-    
-    if (!found) {
-        [self dismiss:YES];
-    }
-    
+//    CGPoint point = [tap locationInView:contentView];
+//    
+//    //NSLog(@"point:(%f,%f)", point.x, point.y);
+//    
+//    BOOL found = NO;
+//    
+//    //NSLog(@"subviewsArray:%@", subviewsArray);
+//    
+//    for (int i = 0; i < subviewsArray.count && !found; i++) {
+//        UIView *view = [subviewsArray objectAtIndex:i];
+//        
+//        //NSLog(@"Rect:(%f,%f,%f,%f)", view.frame.origin.x, view.frame.origin.y, view.frame.size.width, view.frame.size.height);
+//        
+//        if (CGRectContainsPoint(view.frame, point)) {
+//            //The tap was within this view, so we notify the delegate, and break the loop.
+//            
+//            found = YES;
+//            
+//            //NSLog(@"Tapped subview:%d", i);
+//            
+//            if ([view isKindOfClass:[UIButton class]]) {
+//                return;
+//            }
+//            
+//            if (delegate && [delegate respondsToSelector:@selector(popoverView:didSelectItemAtIndex:)]) {
+//                [delegate popoverView:self didSelectItemAtIndex:i];
+//            }
+//            
+//            break;
+//        }
+//    }
+//    
+//    if (!found && CGRectContainsPoint(contentView.bounds, point)) {
+//        found = YES;
+//        //NSLog(@"popover box contains point, ignoring user input");
+//    }
+//    
+//    if (!found) {
+//        [self dismiss:YES];
+//    }
+//    
 }
 
 - (void)didTapButton:(UIButton *)sender
