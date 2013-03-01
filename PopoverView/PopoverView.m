@@ -120,6 +120,7 @@
         
         self.titleView = nil;
         self.contentView = nil;
+        self.drawArrow = YES;
         
         showDividerRects = kShowDividersBetweenViews;
     }
@@ -912,7 +913,7 @@
     
     //If the popover is positioned below (!above) the arrowPoint, then we know that the arrow must be on the top of the popover.
     //In this case, the arrow is located between LT2 and RT1
-    if (!above) {
+    if (!above && self.drawArrow) {
         [popoverPath addLineToPoint:CGPointMake(arrowPoint.x - kArrowHeight, yMin)];//left side
         [popoverPath addCurveToPoint:arrowPoint controlPoint1:CGPointMake(arrowPoint.x - kArrowHeight + kArrowCurvature, yMin) controlPoint2:arrowPoint];//actual arrow point
         [popoverPath addCurveToPoint:CGPointMake(arrowPoint.x + kArrowHeight, yMin) controlPoint1:arrowPoint controlPoint2:CGPointMake(arrowPoint.x + kArrowHeight - kArrowCurvature, yMin)];//right side
@@ -925,7 +926,7 @@
     
     //If the popover is positioned above the arrowPoint, then we know that the arrow must be on the bottom of the popover.
     //In this case, the arrow is located somewhere between LB1 and RB2
-    if (above) {
+    if (above && self.drawArrow) {
         [popoverPath addLineToPoint:CGPointMake(arrowPoint.x + kArrowHeight, yMax)];//right side
         [popoverPath addCurveToPoint:arrowPoint controlPoint1:CGPointMake(arrowPoint.x + kArrowHeight - kArrowCurvature, yMax) controlPoint2:arrowPoint];//arrow point
         [popoverPath addCurveToPoint:CGPointMake(arrowPoint.x - kArrowHeight, yMax) controlPoint1:arrowPoint controlPoint2:CGPointMake(arrowPoint.x - kArrowHeight + kArrowCurvature, yMax)];
