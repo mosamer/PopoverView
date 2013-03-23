@@ -19,6 +19,8 @@
 @synthesize titleView;
 @synthesize delegate;
 
+
+
 #pragma mark - Static Methods
 
 + (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withText:(NSString *)text delegate:(id<PopoverViewDelegate>)delegate {
@@ -55,7 +57,15 @@
 
 + (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withStringArray:(NSArray *)stringArray delegate:(id<PopoverViewDelegate>)delegate {
     PopoverView *popoverView = [[PopoverView alloc] initWithFrame:CGRectZero];
-    [popoverView showAtPoint:point inView:view withStringArray:stringArray];
+    [popoverView showAtPoint:point inView:view withStringArray:stringArray arrowDirection:PopoverArrowDirectionAutomatic];
+    popoverView.delegate = delegate;
+    [popoverView RELEASE];
+    return popoverView;
+}
+
++ (PopoverView *)showPopoverAtPoint:(CGPoint)point inView:(UIView *)view withStringArray:(NSArray *)stringArray delegate:(id<PopoverViewDelegate>)delegate arrowDirection:(PopoverArrowDirection)direction {
+    PopoverView *popoverView = [[PopoverView alloc] initWithFrame:CGRectZero];
+    [popoverView showAtPoint:point inView:view withStringArray:stringArray arrowDirection:direction];
     popoverView.delegate = delegate;
     [popoverView RELEASE];
     return popoverView;
@@ -202,7 +212,11 @@
     [self showAtPoint:point inView:view withTitle:title withViewArray:[NSArray arrayWithObject:[textView AUTORELEASE]]];
 }
 
-- (void)showAtPoint:(CGPoint)point inView:(UIView *)view withViewArray:(NSArray *)viewArray
+- (void)showAtPoint:(CGPoint)point inView:(UIView *)view withViewArray:(NSArray *)viewArray {
+    [self showAtPoint:point inView:view withViewArray:viewArray arrowDirection:PopoverArrowDirectionAutomatic];
+}
+
+- (void)showAtPoint:(CGPoint)point inView:(UIView *)view withViewArray:(NSArray *)viewArray arrowDirection:(PopoverArrowDirection)direction
 {
     UIView *container = [[UIView alloc] initWithFrame:CGRectZero];
     
@@ -269,7 +283,7 @@
     
     self.subviewsArray = viewArray;
     
-    [self showAtPoint:point inView:view withContentView:[container AUTORELEASE] arrowDirection:PopoverArrowDirectionAutomatic];
+    [self showAtPoint:point inView:view withContentView:[container AUTORELEASE] arrowDirection:direction];
 }
 
 - (void)showAtPoint:(CGPoint)point inView:(UIView *)view withTitle:(NSString *)title withViewArray:(NSArray *)viewArray
@@ -357,7 +371,7 @@
     [self showAtPoint:point inView:view withContentView:[container AUTORELEASE] arrowDirection:PopoverArrowDirectionAutomatic];
 }
 
-- (void)showAtPoint:(CGPoint)point inView:(UIView *)view withStringArray:(NSArray *)stringArray
+- (void)showAtPoint:(CGPoint)point inView:(UIView *)view withStringArray:(NSArray *)stringArray arrowDirection:(PopoverArrowDirection)direction
 {
     NSMutableArray *labelArray = [[NSMutableArray alloc] initWithCapacity:stringArray.count];
     
@@ -379,7 +393,7 @@
         [labelArray addObject:[textButton AUTORELEASE]];
     }
     
-    [self showAtPoint:point inView:view withViewArray:[labelArray AUTORELEASE]];
+    [self showAtPoint:point inView:view withViewArray:[labelArray AUTORELEASE] arrowDirection:direction];
 }
 
 - (void)showAtPoint:(CGPoint)point inView:(UIView *)view withTitle:(NSString *)title withStringArray:(NSArray *)stringArray
@@ -1030,6 +1044,11 @@
             }
         }
     }
+}
+
+
+- (void)showAtPoint:(CGPoint)point inView:(UIView *)view withStringArray:(NSArray *)stringArray {
+    [self showAtPoint:point inView:view withStringArray:stringArray arrowDirection:PopoverArrowDirectionAutomatic];
 }
 
 @end
